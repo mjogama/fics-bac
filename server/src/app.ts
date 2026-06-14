@@ -1,6 +1,6 @@
 import cookieParser from "cookie-parser";
 import compression from "compression";
-import express, { type Request, type Response } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -24,7 +24,4 @@ app.use(cookieParser());
 app.use(compression());
 app.use(morgan("dev"));
 
-app.get("/api", async (req: Request, res: Response) => {
-  res.status(200).json("check");
-});
 export default app;
