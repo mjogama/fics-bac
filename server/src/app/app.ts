@@ -6,8 +6,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 
-import { limiter } from "./middlewares/rateLimit.js";
-import globalErrorHandler from "./middlewares/globalErrorHandler.js";
+import { limiter } from "./middlewares/rateLimit";
+import globalErrorHandler from "./middlewares/globalErrorHandler";
 
 dotenv.config();
 

@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 
-import { STATUS_CODE } from "../constants/STATUS_CODE.js";
+import { STATUS_CODE } from "../constants/STATUS_CODE";
 
 const globalErrorHandler = (err: any, _req: Request, res: Response, next: NextFunction) => {
   const statusCode = err.statusCode || 500;

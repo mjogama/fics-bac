@@ -1,4 +1,4 @@
-import type { IStatusCode } from "../types/IStatusCode.js";
+import type { IStatusCode } from "../types/IStatusCode";
 
 export const STATUS_CODE: IStatusCode = {
   400: {
