@@ -6,6 +6,9 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 
+import { limiter } from "./middlewares/rateLimit.js";
+import globalErrorHandler from "./middlewares/globalErrorHandler.js";
+
 dotenv.config();
 
 const app = express();
@@ -23,5 +26,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(compression());
 app.use(morgan("dev"));
+app.use(limiter);
+
+app.use(globalErrorHandler);
 
 export default app;
