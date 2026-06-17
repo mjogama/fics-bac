@@ -1,6 +1,6 @@
-import app from "./app.js";
-import { connectDB } from "./config/db.js";
-import { connectCache } from "./config/cache.js";
+import app from "./app";
+import { connectDB } from "./config/db";
+import { connectCache } from "./config/cache";
 
 const PORT = Number(process.env.PORT) || 8080;
 

@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "node dist/app/server.js",
-    "dev": "npm run build && nodemon --watch src --ext ts --exec \"npm run build && node dist/app/server.js\"",
-    "prod": "tsx watch src/app/server.ts"
+    "build": "tsc --noEmit",
+    "start": "tsx src/app/server.ts",
+    "dev": "tsx watch src/app/server.ts",
+    "prod": "tsx src/app/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +29,7 @@
     "morgan": "^1.11.0",
     "nodemon": "^3.1.14",
     "redis": "^6.0.0",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.3",
     "uuid": "^14.0.0",
     "zod": "^4.4.3"
@@ -45,7 +46,6 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",
     "@types/morgan": "^1.9.10",
-    "@types/node": "^25.9.3",
-    "tsx": "^4.22.4"
+    "@types/node": "^25.9.3"
   }
 }
