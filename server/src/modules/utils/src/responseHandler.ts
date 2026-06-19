@@ -1,10 +1,9 @@
-const responseHandler = (res: any, status: string, statusCode: number, message: string | object | []) => {
+const responseHandler = (res: any, status: boolean, statusCode: number, message: string, details: string | object | null | []) => {
   return res.status(statusCode).json({
     status,
     statusCode,
-    details: {
-      message,
-    },
+    message,
+    details,
   });
 };
 

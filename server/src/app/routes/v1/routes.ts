@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { authV1Routes } from "@modules/auth/v1/index";
+
+const v1Router = Router();
+
+v1Router.get("/status", (_req, res) => {
+  res.status(200).json({ status: "OK", statusCode: 200, details: { message: "API v1 is running" } });
+});
+
+v1Router.use("/auth", authV1Routes);
+
+export default v1Router;

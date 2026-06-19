@@ -8,6 +8,7 @@ import cors from "cors";
 
 import { limiter } from "./middlewares/rateLimit";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
+import { registerRoutes } from "./routes";
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: process.env.NODE_ENV === "production" ? "https://" : "http://localhost:5173",
     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "application/json"],
     credentials: true,
@@ -27,6 +28,8 @@ app.use(cookieParser());
 app.use(compression());
 app.use(morgan("dev"));
 app.use(limiter);
+
+registerRoutes(app);
 
 app.use(globalErrorHandler);
 

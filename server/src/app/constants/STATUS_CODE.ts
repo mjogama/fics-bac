@@ -2,21 +2,21 @@ import type { IStatusCode } from "../types/IStatusCode";
 
 export const STATUS_CODE: IStatusCode = {
   400: {
-    title: "BAD REQUEST",
+    title: "Bad request",
   },
   401: {
-    title: "UNAUTHORIZED",
+    title: "Unauthorized",
   },
   403: {
-    title: "FORBIDDEN",
+    title: "Forbidden",
   },
   404: {
-    title: "NOT FOUND",
+    title: "Not found",
   },
   500: {
-    title: "SERVER ERROR",
+    title: "Server error",
   },
   503: {
-    title: "UNAVAILABLE SERVICE",
+    title: "Unavailable service",
   },
 };
