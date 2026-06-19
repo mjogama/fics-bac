@@ -4,7 +4,7 @@ import asyncErrorHandler from "express-async-handler";
 
 import { client } from "@app/config/cache";
 import type { AuthPayload } from "@app/types/IAuthPayload";
-import type { LoginDTO, SignupDTO } from "../../types/types";
+import type { LoginDTO, SignupDTO } from "../../../../app/types/authTypes/auth";
 import { LoginResponseDTO, SignupResponseDTO } from "./auth.dto";
 import { retrieveUserById } from "@modules/userManagement/v1/index";
 import { authSignup, authLogin, authChangePassword } from "./auth.validator";

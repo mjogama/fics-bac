@@ -2,7 +2,7 @@ import asyncErrorHandler from "express-async-handler";
 import type { Request, Response } from "express";
 
 import { client } from "@app/config/cache";
-import { retrieveUsers, deleteUserAccountById } from "../services/user.service";
+import { retrieveUsers, deleteUserAccountById } from "../../services/user.service";
 import { errorHandler, responseHandler, parsePositiveInt, ObjectIdValidator } from "@modules/utils/index";
 
 export const meData = asyncErrorHandler(async (req: Request, res: Response) => {
