@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authV1Routes } from "@modules/auth/v1/index";
+import { userV1Routes } from "@modules/userManagement/v1/index";
 
 const v1Router = Router();
 
@@ -8,5 +9,6 @@ v1Router.get("/status", (_req, res) => {
 });
 
 v1Router.use("/auth", authV1Routes);
+v1Router.use("/user", userV1Routes);
 
 export default v1Router;
