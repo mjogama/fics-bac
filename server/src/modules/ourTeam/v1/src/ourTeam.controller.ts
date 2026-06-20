@@ -14,7 +14,7 @@ export const createNewOfficer = asyncErrorHandler(async (req: Request, res: Resp
 
   const payload: OurTeamPayload = req.body;
 
-  const createdOfficer = await createOfficer(payload);
+  await createOfficer(payload);
 
   responseHandler(res, true, 201, "Created successfully", null);
 });
