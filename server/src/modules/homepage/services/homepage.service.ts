@@ -1,10 +1,10 @@
 import Homepage from "../models/Homepage";
 
-export const retrieveHomepageData = async () => {
+export const retrieveData = async () => {
   return await Homepage.find().select("_id imageUrl title description");
 };
 
-export const updateHomepageData = async (
+export const updateHomepage = async (
   id: string,
   data: Partial<{
     imageUrl: string;

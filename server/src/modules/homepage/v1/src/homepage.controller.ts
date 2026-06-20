@@ -2,7 +2,7 @@ import asyncErrorHandler from "express-async-handler";
 import type { Request, Response } from "express";
 
 import { client } from "@app/config/cache";
-import { retrieveHomepageData, updateHomepageData } from "../../services/homepage.service";
+import { retrieveData as retrieveHomepageData, updateHomepage as updateHomepageData } from "../../services/homepage.service";
 import { errorHandler, responseHandler, ObjectIdValidator } from "@modules/utils/index";
 
 export const retrieveData = asyncErrorHandler(async (req: Request, res: Response) => {
