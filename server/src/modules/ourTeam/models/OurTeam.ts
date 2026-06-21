@@ -2,7 +2,12 @@ import mongoose, { Schema } from "mongoose";
 
 const ourTeamSchema = new Schema(
   {
-    profileImageUrl: {
+    public_id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    profile_image_url: {
       type: String,
       required: true,
     },

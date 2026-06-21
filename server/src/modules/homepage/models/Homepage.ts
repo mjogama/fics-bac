@@ -2,15 +2,19 @@ import mongoose, { Schema } from "mongoose";
 
 const homepageSchema = new Schema(
   {
-    uploadedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    bg_image_url: {
+      type: String,
+      required: true,
     },
-    imageUrl: {
+    public_id: {
       type: String,
       required: true,
     },
     title: {
+      type: String,
+      required: true,
+    },
+    sub_title: {
       type: String,
       required: true,
     },

@@ -46,13 +46,12 @@
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "noEmit": true,
-    "baseUrl": "./src",
     "paths": {
       "@app/*": [
-        "app/*"
+        "./src/app/*"
       ],
       "@modules/*": [
-        "modules/*"
+        "./src/modules/*"
       ]
     }
   }

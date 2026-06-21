@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 
 import User from "../models/User";
-import type { SignupDTO, LoginDTO } from "../../../app/types/authTypes/auth";
+import type { SignupDTO, LoginDTO } from "../../../app/types/authTypes/authType";
 import { errorHandler } from "../../utils";
 
 export const signupUser = async (userData: SignupDTO) => {
