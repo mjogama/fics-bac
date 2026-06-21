@@ -1,5 +1,5 @@
 import Homepage from "../models/Homepage";
-import type { HomepagePayload } from "@app/types/homepageTypes/homepageType";
+import type { HomepagePayload } from "@app/types/modules/homepageType";
 
 export const createHomepage = async (payload: HomepagePayload) => {
   return await Homepage.create(payload);
