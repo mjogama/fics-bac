@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 
 import { client } from "@app/config/cache";
 import type { FileUploadType } from "@app/types/IUploadFile";
-import type { OurTeamPayload } from "@app/types/ourTeamTypes/ourTeamType";
+import type { OurTeamPayload } from "@app/types/modules/ourTeamType";
 import { createOfficer, findOfficerById, findOfficers, updateOfficerById } from "../../services/ourTeam.services";
 import { errorHandler, responseHandler, ObjectIdValidator, fileUploader, deleteUploadedFile, cleanupUploadedImage } from "@modules/utils/index";
 

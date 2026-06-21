@@ -1,4 +1,4 @@
-import type { SignupDTO } from "../../../../app/types/authTypes/authType";
+import type { SignupDTO } from "../../../../app/types/modules/authType";
 import type { AuthPayload } from "@app/types/IAuthPayload";
 
 export const SignupResponseDTO = (user: SignupDTO) => {

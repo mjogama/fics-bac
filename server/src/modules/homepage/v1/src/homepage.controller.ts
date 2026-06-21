@@ -4,7 +4,7 @@ import type { Request, Response } from "express";
 import { client } from "@app/config/cache";
 import type { FileUploadType } from "@app/types/IUploadFile";
 import { fileUploader, deleteUploadedFile } from "@modules/utils/index";
-import type { HomepagePayload } from "@app/types/homepageTypes/homepageType";
+import type { HomepagePayload } from "@app/types/modules/homepageType";
 import { errorHandler, responseHandler, ObjectIdValidator, cleanupUploadedImage } from "@modules/utils/index";
 import { createHomepage, findHomepage, findHomepageById, updateHomepageById } from "../../services/homepage.service";
 

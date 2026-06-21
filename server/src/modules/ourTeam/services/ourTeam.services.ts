@@ -1,6 +1,6 @@
 import OurTeam from "../models/OurTeam";
 
-import type { OurTeamPayload } from "@app/types/ourTeamTypes/ourTeamType";
+import type { OurTeamPayload } from "@app/types/modules/ourTeamType";
 
 export const createOfficer = async (officer: OurTeamPayload) => {
   return await OurTeam.create(officer);
