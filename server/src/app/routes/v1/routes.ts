@@ -5,6 +5,7 @@ import { homepageV1Routes } from "@modules/homepage/v1/index";
 import { ourTeamV1Routes } from "@modules/ourTeam/v1/index";
 import { eventsV1Routes } from "@modules/events/v1/index";
 import { membershipV1Routes } from "@modules/membership/v1/index";
+import { concernV1Routes, contactV1Routes } from "@modules/contactUs/v1/index";
 
 const v1Router = Router();
 
@@ -18,5 +19,7 @@ v1Router.use("/homepage", homepageV1Routes);
 v1Router.use("/our-team", ourTeamV1Routes);
 v1Router.use("/events", eventsV1Routes);
 v1Router.use("/membership", membershipV1Routes);
+v1Router.use("/concern", concernV1Routes);
+v1Router.use("/contact", contactV1Routes);
 
 export default v1Router;
