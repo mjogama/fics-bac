@@ -1,4 +1,4 @@
-type EventStatus = "upcoming" | "ongoing" | "completed" | "cancelled";
+type EventStatus = "upcoming" | "ongoing" | "completed" | "postponed" | "cancelled";
 
 export type EventPayload = {
   image_urls: string[];
