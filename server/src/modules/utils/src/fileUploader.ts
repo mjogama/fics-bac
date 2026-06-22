@@ -54,10 +54,16 @@ export const fileUploader = async (file: Buffer) => {
   return uploadResult;
 };
 
-export const deleteUploadedFile = async (publicId: string) => {
+export const deleteUploadedFile = async (publicId: string | string[]) => {
   configureCloudinary();
 
-  await cloudinary.uploader.destroy(publicId, {
-    resource_type: "image",
-  });
+  const publicIds = Array.isArray(publicId) ? publicId : [publicId];
+
+  await Promise.all(
+    publicIds.map((id) =>
+      cloudinary.uploader.destroy(id, {
+        resource_type: "image",
+      }),
+    ),
+  );
 };
