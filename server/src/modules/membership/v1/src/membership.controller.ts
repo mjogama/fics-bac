@@ -40,13 +40,13 @@ export const createNewTransaction = asyncErrorHandler(async (req: Request, res: 
     throw error;
   }
 
-  responseHandler(res, true, 201, "Created transaction successfully", uploadResults);
+  responseHandler(res, 201, "Created new transaction successfully", uploadResults);
 });
 
 export const retrieveTransactions = asyncErrorHandler(async (req: Request, res: Response) => {
-  const result = await findMembershipTransactions();
+  const dbResult = await findMembershipTransactions();
 
-  responseHandler(res, true, 200, "Retrieved membership transaction successfully", result);
+  responseHandler(res, 200, "Retrieved membership transactions successfully", dbResult);
 });
 
 export const updateTransaction = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -73,12 +73,12 @@ export const updateTransaction = asyncErrorHandler(async (req: Request, res: Res
   if (description !== undefined) updateData.description = description;
 
   if (Object.keys(updateData).length === 0) {
-    return errorHandler("No membership transaction data provided", 400);
+    return errorHandler("No data field provided", 400);
   }
 
-  await updateMembershipTransactionById(id, updateData);
+  const dbResult = await updateMembershipTransactionById(id, updateData);
 
-  responseHandler(res, true, 200, "Updated membership transaction successfully", null);
+  responseHandler(res, 200, "Updated membership transaction successfully", dbResult);
 });
 
 export const deleteTransaction = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -93,11 +93,11 @@ export const deleteTransaction = asyncErrorHandler(async (req: Request, res: Res
   const existingTransaction = await findMembershipTransactionById(id);
 
   if (!existingTransaction) {
-    return errorHandler("Transaction not exists", 404);
+    return errorHandler("Transaction not found", 404);
   }
 
   await deleteUploadedFile(existingTransaction.public_ids);
-  await deleteMembershipTransactionById(id);
+  const dbResult = await deleteMembershipTransactionById(id);
 
-  responseHandler(res, true, 200, "Deleted membership transaction successfully", null);
+  responseHandler(res, 200, "Deleted membership transaction successfully", dbResult);
 });

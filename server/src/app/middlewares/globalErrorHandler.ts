@@ -24,9 +24,7 @@ const globalErrorHandler = (err: any, _req: Request, res: Response, next: NextFu
   res.status(statusCode).json({
     status: errTitle?.title,
     statusCode,
-    details: {
-      errMessage,
-    },
+    errMessage,
   });
 };
 

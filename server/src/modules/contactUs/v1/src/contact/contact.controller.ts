@@ -34,15 +34,15 @@ export const createNewContact = asyncErrorHandler(async (req: Request, res: Resp
     socials: data.socials,
   };
 
-  await createContact(payload);
+  const dbResult = await createContact(payload);
 
-  responseHandler(res, true, 201, "Created new contact successfully", null);
+  responseHandler(res, 201, "Created new contact successfully", dbResult);
 });
 
 export const retrieveContacts = asyncErrorHandler(async (req: Request, res: Response) => {
-  const result = await findContacts();
+  const dbResult = await findContacts();
 
-  responseHandler(res, true, 200, "Retrieved contact data successfully", result);
+  responseHandler(res, 200, "Retrieved contacts data successfully", dbResult);
 });
 
 export const updateContact = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -83,10 +83,10 @@ export const updateContact = asyncErrorHandler(async (req: Request, res: Respons
   if (data.socials !== undefined) updateData.socials = data.socials;
 
   if (Object.keys(updateData).length === 0) {
-    return errorHandler("No contact data provided", 400);
+    return errorHandler("No data field provided", 400);
   }
 
   await updateContactById(id, updateData);
 
-  responseHandler(res, true, 200, "Updated contact successfully", null);
+  responseHandler(res, 200, "Updated contact successfully", null);
 });

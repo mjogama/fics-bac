@@ -39,13 +39,13 @@ export const createNewConcern = asyncErrorHandler(async (req: Request, res: Resp
 
   const dbResult = await createConcern(payload);
 
-  responseHandler(res, true, 201, "Created concern successfully", dbResult);
+  responseHandler(res, 201, "Created new concern successfully", dbResult);
 });
 
 export const retrieveConcerns = asyncErrorHandler(async (req: Request, res: Response) => {
-  const result = await findConcerns();
+  const dbResult = await findConcerns();
 
-  responseHandler(res, true, 200, "Retrieved concerns successfully", result);
+  responseHandler(res, 200, "Retrieved concerns successfully", dbResult);
 });
 
 export const deleteConcern = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -60,10 +60,10 @@ export const deleteConcern = asyncErrorHandler(async (req: Request, res: Respons
   const existingConcern = await findConcernById(id);
 
   if (!existingConcern) {
-    return errorHandler("Concern not exists", 404);
+    return errorHandler("Concern not found", 404);
   }
 
-  const result = await deleteConcernById(id);
+  const dbResult = await deleteConcernById(id);
 
-  responseHandler(res, true, 200, "Deleted concern successfully", result);
+  responseHandler(res, 200, "Deleted concern successfully", dbResult);
 });
