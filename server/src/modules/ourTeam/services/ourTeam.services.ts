@@ -7,7 +7,7 @@ export const createOfficer = async (officer: OurTeamPayload) => {
 };
 
 export const findOfficers = async () => {
-  return await OurTeam.find().select("_id profile_image_url fullName position term");
+  return await OurTeam.find().sort({ createdAt: -1 }).select("_id profile_image_url fullName position term");
 };
 
 export const findOfficerById = async (id: string) => {
@@ -15,5 +15,5 @@ export const findOfficerById = async (id: string) => {
 };
 
 export const updateOfficerById = async (id: string, officer: Partial<OurTeamPayload>) => {
-  return await OurTeam.updateOne({ _id: id }, { $set: officer });
+  return await OurTeam.findOneAndUpdate({ _id: id }, { $set: officer }, { returnDocument: "after", runValidators: true });
 };

@@ -7,7 +7,7 @@ export const createEvent = async (payload: EventPayload) => {
 };
 
 export const findEvents = async () => {
-  return await Events.find().sort({ start_date: 1 });
+  return await Events.find().sort({ start_date: -1 });
 };
 
 export const findEventById = async (id: string) => {
@@ -15,9 +15,9 @@ export const findEventById = async (id: string) => {
 };
 
 export const updateEventById = async (id: string, data: Partial<EventPayload>) => {
-  return await Events.updateOne({ _id: id }, { $set: data });
+  return await Events.findOneAndUpdate({ _id: id }, { $set: data }, { returnDocument: "after", runValidators: true });
 };
 
 export const deleteEventById = async (id: string) => {
-  return await Events.findOneAndDelete({ _id: id });
+  return await Events.findByIdAndDelete({ _id: id });
 };

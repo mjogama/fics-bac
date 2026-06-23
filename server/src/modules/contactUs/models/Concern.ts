@@ -4,9 +4,11 @@ const concernSchema = new Schema(
   {
     name: {
       type: String,
+      trim: true,
     },
     email: {
       type: String,
+      trim: true,
     },
     type: {
       type: String,
@@ -15,10 +17,12 @@ const concernSchema = new Schema(
     },
     subject: {
       type: String,
+      trim: true,
       required: true,
     },
     details: {
       type: String,
+      trim: true,
       required: true,
     },
   },

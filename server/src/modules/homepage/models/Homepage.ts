@@ -12,14 +12,17 @@ const homepageSchema = new Schema(
     },
     title: {
       type: String,
+      trim: true,
       required: true,
     },
     sub_title: {
       type: String,
+      trim: true,
       required: true,
     },
     description: {
       type: String,
+      trim: true,
       required: true,
     },
   },

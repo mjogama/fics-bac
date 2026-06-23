@@ -8,7 +8,7 @@ import type { LoginDTO, SignupDTO } from "../../../../app/types/modules/authType
 import { LoginResponseDTO, SignupResponseDTO } from "./auth.dto";
 import { retrieveUserById } from "@modules/userManagement/v1/index";
 import { authSignup, authLogin, authChangePassword } from "./auth.validator";
-import { signupUser, loginUser, updateUserName, updateUserPassword } from "@modules/auth/services/auth.service";
+import { signupUser, loginUser, updateUserNameById, updateUserPasswordById } from "@modules/auth/services/auth.service";
 import { errorHandler, responseHandler, accessToken, refreshToken, setAuthCookie, clearAuthCookie, getValidationErrorMessage } from "@modules/utils/index";
 
 export const signup = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -117,9 +117,9 @@ export const changeName = asyncErrorHandler(async (req: Request, res: Response) 
     return errorHandler("Name field is required", 400);
   }
 
-  await updateUserName(id, newName);
+  const dbResult = await updateUserNameById(id, newName);
 
-  responseHandler(res, 200, "Changed name successfully", null);
+  responseHandler(res, 200, "Changed name successfully", dbResult);
 });
 
 export const changePassword = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -139,7 +139,7 @@ export const changePassword = asyncErrorHandler(async (req: Request, res: Respon
 
   const data = result.data;
 
-  await updateUserPassword(id, data?.newPassword);
+  await updateUserPasswordById(id, data?.newPassword);
 
   responseHandler(res, 200, "Changed password successfully", null);
 });

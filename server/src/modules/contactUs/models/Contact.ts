@@ -4,14 +4,17 @@ const contactSchema = new Schema(
   {
     email: {
       type: String,
+      trim: true,
       required: true,
     },
     location: {
       type: String,
+      trim: true,
       required: true,
     },
     office_hours: {
       type: String,
+      trim: true,
       required: true,
     },
     socials: {

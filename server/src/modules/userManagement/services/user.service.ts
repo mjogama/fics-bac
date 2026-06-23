@@ -26,5 +26,5 @@ export const retrieveUserById = async (id: string) => {
 };
 
 export const deleteUserAccountById = async (id: string) => {
-  return await User.deleteOne({ _id: id });
+  return await User.findOneAndDelete({ _id: id });
 };
