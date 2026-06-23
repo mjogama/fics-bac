@@ -13,14 +13,17 @@ const ourTeamSchema = new Schema(
     },
     fullName: {
       type: String,
+      trim: true,
       required: true,
     },
     position: {
       type: String,
+      trim: true,
       required: true,
     },
     term: {
       type: String,
+      trim: true,
       required: true,
     },
   },

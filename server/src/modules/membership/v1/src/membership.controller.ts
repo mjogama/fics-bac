@@ -20,6 +20,7 @@ export const createNewTransaction = asyncErrorHandler(async (req: Request, res: 
     return errorHandler("All fields are required", 400);
   }
 
+  let dbResult;
   const uploadResults: FileUploadType[] = [];
 
   try {
@@ -34,13 +35,13 @@ export const createNewTransaction = asyncErrorHandler(async (req: Request, res: 
       public_ids: uploadResults.map((result) => result.public_id),
     };
 
-    await createMembershipTransaction(payload);
+    dbResult = await createMembershipTransaction(payload);
   } catch (error) {
     await Promise.all(uploadResults.map((result) => cleanupUploadedImage(result.public_id, "membership")));
     throw error;
   }
 
-  responseHandler(res, 201, "Created new transaction successfully", uploadResults);
+  responseHandler(res, 201, "Created new transaction successfully", dbResult);
 });
 
 export const retrieveTransactions = asyncErrorHandler(async (req: Request, res: Response) => {

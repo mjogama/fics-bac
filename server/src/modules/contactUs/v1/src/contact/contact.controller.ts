@@ -86,7 +86,7 @@ export const updateContact = asyncErrorHandler(async (req: Request, res: Respons
     return errorHandler("No data field provided", 400);
   }
 
-  await updateContactById(id, updateData);
+  const dbResult = await updateContactById(id, updateData);
 
-  responseHandler(res, 200, "Updated contact successfully", null);
+  responseHandler(res, 200, "Updated contact successfully", dbResult);
 });

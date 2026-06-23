@@ -14,5 +14,5 @@ export const findHomepageById = async (id: string) => {
 };
 
 export const updateHomepageById = async (id: string, data: Partial<HomepagePayload>) => {
-  return await Homepage.updateOne({ _id: id }, { $set: data });
+  return await Homepage.findOneAndUpdate({ _id: id }, { $set: data }, { returnDocument: "after", runValidators: true });
 };

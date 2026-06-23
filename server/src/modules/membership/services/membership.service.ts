@@ -7,7 +7,7 @@ export const createMembershipTransaction = async (payload: MembershipType) => {
 };
 
 export const findMembershipTransactions = async () => {
-  return await Membership.find();
+  return await Membership.find().sort({ createdAt: -1 });
 };
 
 export const findMembershipTransactionById = async (id: string) => {
@@ -15,7 +15,7 @@ export const findMembershipTransactionById = async (id: string) => {
 };
 
 export const updateMembershipTransactionById = async (id: string, data: Partial<MembershipType>) => {
-  return await Membership.updateOne({ _id: id }, { $set: data });
+  return await Membership.findOneAndUpdate({ _id: id }, { $set: data }, { returnDocument: "after", runValidators: true });
 };
 
 export const deleteMembershipTransactionById = async (id: string) => {

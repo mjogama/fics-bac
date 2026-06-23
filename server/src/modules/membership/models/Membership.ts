@@ -12,13 +12,13 @@ const membershipSchema = new Schema(
     },
     name: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
     purpose: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
     amount: {
       type: Number,
@@ -27,8 +27,8 @@ const membershipSchema = new Schema(
     },
     description: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
   },
   {

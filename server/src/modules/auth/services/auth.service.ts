@@ -44,15 +44,15 @@ export const loginUser = async (userData: LoginDTO) => {
   return user;
 };
 
-export const updateUserName = async (id: string, name: string) => {
-  return User.updateOne({ _id: id }, { $set: { name } });
+export const updateUserNameById = async (id: string, name: string) => {
+  return User.findOneAndUpdate({ _id: id }, { $set: { name } }, { returnDocument: "after", runValidators: true }).select("_id name");
 };
 
-export const updateUserPassword = async (id: string, password: string) => {
+export const updateUserPasswordById = async (id: string, password: string) => {
   const hashedPassword = await bcrypt.hash(password, 10);
-  return User.updateOne({ _id: id }, { $set: { password: hashedPassword } });
+  return User.findOneAndUpdate({ _id: id }, { $set: { password: hashedPassword } }, { returnDocument: "after", runValidators: true });
 };
 
-export const deleteUserAccount = async (id: string) => {
+export const deleteUserAccountById = async (id: string) => {
   return await User.deleteOne({ _id: id });
 };

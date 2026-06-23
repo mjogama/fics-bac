@@ -15,5 +15,5 @@ export const findContactById = async (id: string) => {
 };
 
 export const updateContactById = async (id: string, data: Partial<ContactPayload>) => {
-  return await Contact.updateOne({ _id: id }, { $set: data });
+  return await Contact.findOneAndUpdate({ _id: id }, { $set: data }, { returnDocument: "after", runValidators: true });
 };

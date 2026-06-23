@@ -106,5 +106,5 @@ export const updateOfficer = asyncErrorHandler(async (req: Request, res: Respons
 
   await client.del(OFFICERS_CACHE_KEY);
 
-  responseHandler(res, 200, "Updated officer successfully", null);
+  responseHandler(res, 200, "Updated officer successfully", dbResult);
 });

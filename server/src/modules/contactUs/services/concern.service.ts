@@ -7,7 +7,7 @@ export const createConcern = async (payload: ConcernPayload) => {
 };
 
 export const findConcerns = async () => {
-  return await Concern.find().sort({ createdAt: 1 });
+  return await Concern.find().sort({ createdAt: -1 });
 };
 
 export const findConcernById = async (id: string) => {

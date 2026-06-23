@@ -20,8 +20,8 @@ const eventsSchema = new Schema(
     },
     title: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
     status: {
       type: String,
@@ -31,8 +31,8 @@ const eventsSchema = new Schema(
     },
     location: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
     time: {
       type: String,
@@ -40,8 +40,8 @@ const eventsSchema = new Schema(
     },
     description: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
   },
   {
