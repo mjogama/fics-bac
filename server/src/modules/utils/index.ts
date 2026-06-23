@@ -1,5 +1,6 @@
 export * from "./src/accessToken";
 export * from "./src/cookiesGenerator/setAuthcookie";
+export { default as getRequiredEnv } from "./src/getRequiredEnv";
 export { createAppError, errorHandler } from "./src/errorHandler";
 export { default as responseHandler } from "./src/responseHandler";
 export { default as parsePositiveInt } from "./src/parsePositiveInt";
