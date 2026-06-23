@@ -25,8 +25,10 @@ export const createNewOfficer = asyncErrorHandler(async (req: Request, res: Resp
     public_id: uploadResult.public_id,
   };
 
+  let dbResult;
+
   try {
-    await createOfficer(payload);
+    dbResult = await createOfficer(payload);
   } catch (error) {
     await cleanupUploadedImage(uploadResult.public_id, "officer");
     throw error;
@@ -34,21 +36,21 @@ export const createNewOfficer = asyncErrorHandler(async (req: Request, res: Resp
 
   await client.del(OFFICERS_CACHE_KEY);
 
-  responseHandler(res, true, 201, "Created successfully", null);
+  responseHandler(res, 201, "Created new officer successfully", dbResult);
 });
 
 export const retrieveOfficers = asyncErrorHandler(async (req: Request, res: Response) => {
   const cache = await client.get(OFFICERS_CACHE_KEY);
 
   if (cache) {
-    return responseHandler(res, true, 200, "Retrieved data successfully", JSON.parse(cache));
+    return responseHandler(res, 200, "Retrieved officers data successfully", JSON.parse(cache));
   }
 
-  const officers = await findOfficers();
+  const dbResult = await findOfficers();
 
-  await client.setEx(OFFICERS_CACHE_KEY, 30, JSON.stringify(officers));
+  await client.setEx(OFFICERS_CACHE_KEY, 30, JSON.stringify(dbResult));
 
-  responseHandler(res, true, 200, "Retrieved data successfully", officers);
+  responseHandler(res, 200, "Retrieved data successfully", dbResult);
 });
 
 export const updateOfficer = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -83,13 +85,13 @@ export const updateOfficer = asyncErrorHandler(async (req: Request, res: Respons
   if (term !== undefined) updateData.term = term;
 
   if (Object.keys(updateData).length === 0) {
-    return errorHandler("No officer data provided", 400);
+    return errorHandler("No data field provided", 400);
   }
 
-  let officer;
+  let dbResult;
 
   try {
-    officer = await updateOfficerById(id, updateData);
+    dbResult = await updateOfficerById(id, updateData);
   } catch (error) {
     if (uploadedPublicId) {
       await cleanupUploadedImage(uploadedPublicId, "officer");
@@ -98,23 +100,11 @@ export const updateOfficer = asyncErrorHandler(async (req: Request, res: Respons
     throw error;
   }
 
-  if (officer.matchedCount === 0) {
-    if (uploadedPublicId) {
-      await cleanupUploadedImage(uploadedPublicId, "officer");
-    }
-
-    return errorHandler("Officer not found", 404);
-  }
-
   if (profile_image_url !== undefined) {
-    try {
-      await deleteUploadedFile(existingOfficer.public_id); // still success if error occurred
-    } catch (error) {
-      console.error("Failed to delete previous officer image from Cloudinary:", error);
-    }
+    await cleanupUploadedImage(existingOfficer.public_id, "officer");
   }
 
   await client.del(OFFICERS_CACHE_KEY);
 
-  responseHandler(res, true, 200, "Updated officer successfully", null);
+  responseHandler(res, 200, "Updated officer successfully", null);
 });

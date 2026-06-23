@@ -5,7 +5,7 @@ import { client } from "@app/config/cache";
 import type { FileUploadType } from "@app/types/IUploadFile";
 import { fileUploader, deleteUploadedFile } from "@modules/utils/index";
 import type { HomepagePayload } from "@app/types/modules/homepageType";
-import { errorHandler, responseHandler, ObjectIdValidator, cleanupUploadedImage } from "@modules/utils/index";
+import { errorHandler, createAppError, responseHandler, ObjectIdValidator, cleanupUploadedImage } from "@modules/utils/index";
 import { createHomepage, findHomepage, findHomepageById, updateHomepageById } from "../../services/homepage.service";
 
 const HOMEPAGE_CACHE_KEY = "api:homepage";
@@ -27,29 +27,28 @@ export const createNewHomepage = asyncErrorHandler(async (req: Request, res: Res
   };
 
   try {
-    await createHomepage(payload);
+    const dbResult = await createHomepage(payload);
+    await client.del(HOMEPAGE_CACHE_KEY);
+
+    await responseHandler(res, 201, "Created new homepage successfully", dbResult);
   } catch (error) {
     await cleanupUploadedImage(uploadResult.public_id, "homepage");
-    throw error;
+    throw createAppError("Upload file failed.", 500);
   }
-
-  await client.del(HOMEPAGE_CACHE_KEY);
-
-  await responseHandler(res, true, 201, "Created successfully", null);
 });
 
 export const retrieveHomepage = asyncErrorHandler(async (req: Request, res: Response) => {
   const cache = await client.get(HOMEPAGE_CACHE_KEY);
 
   if (cache) {
-    return responseHandler(res, true, 200, "Retrieved homepage data successfully", JSON.parse(cache));
+    return responseHandler(res, 200, "Retrieved homepage data successfully", JSON.parse(cache));
   }
 
-  const result = await findHomepage();
+  const dbResult = await findHomepage();
 
-  await client.setEx(HOMEPAGE_CACHE_KEY, 300, JSON.stringify(result));
+  await client.setEx(HOMEPAGE_CACHE_KEY, 300, JSON.stringify(dbResult));
 
-  responseHandler(res, true, 200, "Retrieved homepage data successfully", result);
+  responseHandler(res, 200, "Retrieved homepage data successfully", dbResult);
 });
 
 export const updateHomepage = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -87,10 +86,11 @@ export const updateHomepage = asyncErrorHandler(async (req: Request, res: Respon
     return errorHandler("No homepage data provided", 400);
   }
 
-  let homepage;
+  let dbResult;
 
   try {
-    homepage = await updateHomepageById(id, updateData);
+    dbResult = await updateHomepageById(id, updateData); // if updated files into db, it will throws an error in catch
+    await client.del(HOMEPAGE_CACHE_KEY);
   } catch (error) {
     if (uploadedPublicId) {
       await cleanupUploadedImage(uploadedPublicId, "homepage");
@@ -99,23 +99,9 @@ export const updateHomepage = asyncErrorHandler(async (req: Request, res: Respon
     throw error;
   }
 
-  if (homepage.matchedCount === 0) {
-    if (uploadedPublicId) {
-      await cleanupUploadedImage(uploadedPublicId, "homepage");
-    }
-
-    return errorHandler("Homepage not found", 404);
-  }
-
   if (bg_image_url !== undefined) {
-    try {
-      await deleteUploadedFile(existingHomepage.public_id); // still success if error occurred
-    } catch (error) {
-      console.error("Failed to delete previous homepage image from Cloudinary:", error);
-    }
+    await cleanupUploadedImage(existingHomepage.public_id, "homepage");
   }
 
-  await client.del(HOMEPAGE_CACHE_KEY);
-
-  responseHandler(res, true, 200, "Updated homepage successfully", null);
+  responseHandler(res, 200, "Updated homepage successfully", dbResult);
 });

@@ -1,9 +1,9 @@
-const responseHandler = (res: any, status: boolean, statusCode: number, message: string, details: string | object | null | []) => {
+const responseHandler = (res: any, statusCode: number, message: string, data: string | {} | [] | null) => {
   return res.status(statusCode).json({
-    status,
+    status: "OK",
     statusCode,
     message,
-    details,
+    data,
   });
 };
 

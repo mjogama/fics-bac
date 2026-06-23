@@ -8,7 +8,7 @@ import { errorHandler, responseHandler, parsePositiveInt, ObjectIdValidator } fr
 export const meData = asyncErrorHandler(async (req: Request, res: Response) => {
   const { data } = req;
 
-  responseHandler(res, true, 200, "Retrieved data successfully", data);
+  responseHandler(res, 200, "Retrieved data successfully", data);
 });
 
 export const retrieveData = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -17,14 +17,14 @@ export const retrieveData = asyncErrorHandler(async (req: Request, res: Response
 
   const cache = await client.get(cacheKey);
   if (cache) {
-    responseHandler(res, true, 200, "Retrieved data successfully", JSON.parse(cache));
+    responseHandler(res, 200, "Retrieved data successfully", JSON.parse(cache));
     return;
   }
 
-  const data = await retrieveUsers(page);
-  await client.setEx(cacheKey, 30, JSON.stringify(data));
+  const dbResult = await retrieveUsers(page);
+  await client.setEx(cacheKey, 30, JSON.stringify(dbResult));
 
-  responseHandler(res, true, 200, "Retrieved data successfully", data);
+  responseHandler(res, 200, "Retrieved data successfully", dbResult);
 });
 
 export const deleteUserAccount = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -36,11 +36,11 @@ export const deleteUserAccount = asyncErrorHandler(async (req: Request, res: Res
     return errorHandler("ID not found", 400);
   }
 
-  const user = await deleteUserAccountById(id);
+  const dbResult = await deleteUserAccountById(id);
 
-  if (user.deletedCount === 0) {
+  if (dbResult.deletedCount === 0) {
     return errorHandler("User not found", 404);
   }
 
-  responseHandler(res, true, 200, "Deleted user account successfully", null);
+  responseHandler(res, 200, "Deleted user account successfully", dbResult);
 });

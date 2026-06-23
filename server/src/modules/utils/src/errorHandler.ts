@@ -8,8 +8,10 @@ class AppError extends Error {
   }
 }
 
-const errorHandler = (message: string, statusCode: number): never => {
-  throw new AppError(message, statusCode);
+export const createAppError = (message: string, statusCode: number) => {
+  return new AppError(message, statusCode);
 };
 
-export default errorHandler;
+export const errorHandler = (message: string, statusCode: number): never => {
+  throw createAppError(message, statusCode);
+};

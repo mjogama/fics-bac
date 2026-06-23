@@ -28,7 +28,7 @@ export const signup = asyncErrorHandler(async (req: Request, res: Response) => {
 
   await signupUser(payload);
 
-  responseHandler(res, true, 201, "Created successfully", SignupResponseDTO(payload));
+  responseHandler(res, 201, "Signup successfully", SignupResponseDTO(payload));
 });
 
 export const login = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -61,20 +61,22 @@ export const login = asyncErrorHandler(async (req: Request, res: Response) => {
   setAuthCookie(res, "accessToken", accessTokenHandler);
   setAuthCookie(res, "refreshToken", refreshTokenHandler);
 
-  responseHandler(res, true, 200, "Login successfully", LoginResponseDTO(authPayload));
+  responseHandler(res, 200, "Login successfully", LoginResponseDTO(authPayload));
 });
 
 export const logout = asyncErrorHandler(async (req: Request, res: Response) => {
   const token = req.cookies.accessToken;
 
-  if (token) {
-    await client.setEx(`blacklist:${token}`, 300, "true");
+  if (!token) {
+    return errorHandler("Token has been revoked", 404);
   }
+
+  await client.setEx(`blacklist:${token}`, 300, "true");
 
   clearAuthCookie(res, "accessToken");
   clearAuthCookie(res, "refreshToken");
 
-  responseHandler(res, true, 200, "Logout successfully", null);
+  responseHandler(res, 200, "Logout successfully", null);
 });
 
 export const refreshTokenUser = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -104,7 +106,7 @@ export const refreshTokenUser = asyncErrorHandler(async (req: Request, res: Resp
   setAuthCookie(res, "accessToken", accessTokenHandler);
   setAuthCookie(res, "refreshToken", refreshTokenHandler);
 
-  responseHandler(res, true, 200, "Token refreshed successfully", LoginResponseDTO(authPayload));
+  responseHandler(res, 200, "Token refreshed successfully", LoginResponseDTO(authPayload));
 });
 
 export const changeName = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -117,7 +119,7 @@ export const changeName = asyncErrorHandler(async (req: Request, res: Response) 
 
   await updateUserName(id, newName);
 
-  responseHandler(res, true, 200, "Changed name successfully", null);
+  responseHandler(res, 200, "Changed name successfully", null);
 });
 
 export const changePassword = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -139,5 +141,5 @@ export const changePassword = asyncErrorHandler(async (req: Request, res: Respon
 
   await updateUserPassword(id, data?.newPassword);
 
-  responseHandler(res, true, 200, "Changed password successfully", null);
+  responseHandler(res, 200, "Changed password successfully", null);
 });

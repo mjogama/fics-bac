@@ -4,7 +4,7 @@ import asyncErrorHandler from "express-async-handler";
 import type { FileUploadType } from "@app/types/IUploadFile";
 import type { EventPayload } from "@app/types/modules/eventsType";
 import { createEvent, findEvents, findEventById, updateEventById, deleteEventById } from "../../services/events.service";
-import { errorHandler, responseHandler, fileUploader, cleanupUploadedImage, ObjectIdValidator, deleteUploadedFile } from "@modules/utils/index";
+import { errorHandler, createAppError, responseHandler, fileUploader, cleanupUploadedImage, ObjectIdValidator, deleteUploadedFile } from "@modules/utils/index";
 
 export const createNewEvent = asyncErrorHandler(async (req: Request, res: Response) => {
   const { start_date, end_date, title, status, location, time, description } = req.body;
@@ -28,19 +28,18 @@ export const createNewEvent = asyncErrorHandler(async (req: Request, res: Respon
       public_ids: uploadResults.map((result) => result.public_id),
     };
 
-    await createEvent(payload);
+    const dbResult = await createEvent(payload);
+    responseHandler(res, 201, "Created new event successfully", dbResult);
   } catch (error) {
     await Promise.all(uploadResults.map((result) => cleanupUploadedImage(result.public_id, "event")));
-    throw error;
+    throw createAppError("Upload file failed.", 500);
   }
-
-  responseHandler(res, true, 201, "Created event successfully", null);
 });
 
 export const retrieveEvents = asyncErrorHandler(async (req: Request, res: Response) => {
-  const result = await findEvents();
+  const dbResult = await findEvents();
 
-  responseHandler(res, true, 200, "Retrieved events data successfully", result);
+  responseHandler(res, 200, "Retrieved events data successfully", dbResult);
 });
 
 export const updateEvent = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -70,12 +69,12 @@ export const updateEvent = asyncErrorHandler(async (req: Request, res: Response)
   if (description !== undefined) updateData.description = description;
 
   if (Object.keys(updateData).length === 0) {
-    return errorHandler("No event data provided", 400);
+    return errorHandler("No data field provided", 400);
   }
 
-  await updateEventById(id, updateData);
+  const dbResult = await updateEventById(id, updateData);
 
-  responseHandler(res, true, 200, "Updated event successfully", null);
+  responseHandler(res, 200, "Updated event successfully", dbResult);
 });
 
 export const deleteEvent = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -90,11 +89,12 @@ export const deleteEvent = asyncErrorHandler(async (req: Request, res: Response)
   const existingEvent = await findEventById(id);
 
   if (!existingEvent) {
-    return errorHandler("Event not exists", 404);
+    return errorHandler("Event not found", 404);
   }
 
   await deleteUploadedFile(existingEvent.public_ids);
-  await deleteEventById(id);
 
-  responseHandler(res, true, 200, "Deleted event successfully", null);
+  const dbResult = await deleteEventById(id);
+
+  responseHandler(res, 200, "Deleted event successfully", dbResult);
 });

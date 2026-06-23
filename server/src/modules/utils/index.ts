@@ -1,6 +1,6 @@
 export * from "./src/accessToken";
 export * from "./src/cookiesGenerator/setAuthcookie";
-export { default as errorHandler } from "./src/errorHandler";
+export { createAppError, errorHandler } from "./src/errorHandler";
 export { default as responseHandler } from "./src/responseHandler";
 export { default as parsePositiveInt } from "./src/parsePositiveInt";
 export { fileUploader, deleteUploadedFile } from "./src/fileUploader";
