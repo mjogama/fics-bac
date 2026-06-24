@@ -7,7 +7,7 @@ import { createNewContact, retrieveContacts, updateContact } from "./contact.con
 const router = Router();
 
 router.post("/create", authToken, authRole("Admin", "Editor"), createNewContact);
-router.get("/contacts", authToken, authRole("Admin", "Editor", "Viewer"), retrieveContacts);
+router.get("/data", authToken, authRole("Admin", "Editor", "Viewer"), retrieveContacts);
 router.patch("/update/:id", authToken, authRole("Admin", "Editor"), updateContact);
 
 export default router;

@@ -7,8 +7,8 @@ import authRole from "@app/middlewares/authRole";
 
 const router = Router();
 
-router.post("/create", authToken, authRole("Admin", "Editor"), uploadFileMiddleware.array("image_url"), createNewEvent);
-router.get("/", authToken, authRole("Admin", "Editor", "Viewer"), retrieveEvents);
+router.post("/create", authToken, authRole("Admin", "Editor"), uploadFileMiddleware.array("image_urls"), createNewEvent);
+router.get("/data", authToken, authRole("Admin", "Editor", "Viewer"), retrieveEvents);
 router.patch("/update/:id", authToken, authRole("Admin", "Editor"), updateEvent);
 router.delete("/del/:id", authToken, authRole("Admin", "Editor"), deleteEvent);
 

@@ -8,7 +8,7 @@ import { createNewConcern, retrieveConcerns, deleteConcern } from "./concern.con
 const router = Router();
 
 router.post("/create", authToken, concernCreateLimiter, createNewConcern);
-router.get("/concerns", authToken, authRole("Admin", "Editor", "Viewer"), retrieveConcerns);
+router.get("/data", authToken, authRole("Admin", "Editor", "Viewer"), retrieveConcerns);
 router.delete("/del/:id", authToken, authRole("Admin"), deleteConcern);
 
 export default router;
