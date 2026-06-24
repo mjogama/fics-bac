@@ -1,4 +1,8 @@
+import path from "path";
 import multer from "multer";
+
+import { createAppError } from "@modules/utils/index";
+import { IMAGE_EXTENSION } from "@app/constants/IMAGE_EXTESION";
 
 const uploadFileMiddleware = multer({
   storage: multer.memoryStorage(),
@@ -6,8 +10,10 @@ const uploadFileMiddleware = multer({
     fileSize: 10 * 1024 * 1024, // 10MB
   },
   fileFilter: (_req, file, callback) => {
-    if (!file.mimetype.startsWith("image/")) {
-      callback(new Error("Only image files are allowed"));
+    const fileExtension = path.extname(file.originalname).slice(1).toLowerCase();
+
+    if (!IMAGE_EXTENSION.includes(fileExtension)) {
+      callback(createAppError(`Only ${IMAGE_EXTENSION.join(", ")}, image extension are allowed`, 400));
       return;
     }
 
