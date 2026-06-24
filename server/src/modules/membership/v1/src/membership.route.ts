@@ -1,9 +1,10 @@
 import { Router } from "express";
 
-import { createNewTransaction, retrieveTransactions, updateTransaction, deleteTransaction } from "./membership.controller";
-import uploadFileMiddleware from "@app/middlewares/uploadFileMiddleware";
-import { authToken } from "@app/middlewares/authToken";
 import authRole from "@app/middlewares/authRole";
+import { authToken } from "@app/middlewares/authToken";
+import uploadFileMiddleware from "@app/middlewares/uploadFileMiddleware";
+import { createNewTransaction, retrieveTransactions, updateTransaction, deleteTransaction } from "./membership.controller";
+
 const router = Router();
 
 router.post("/create", authToken, authRole("Admin", "Editor"), uploadFileMiddleware.array("image_urls"), createNewTransaction);

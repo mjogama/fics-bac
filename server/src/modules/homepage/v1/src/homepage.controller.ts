@@ -3,10 +3,11 @@ import type { Request, Response } from "express";
 
 import { client } from "@app/config/cache";
 import type { FileUploadType } from "@app/types/IUploadFile";
-import { fileUploader, deleteUploadedFile } from "@modules/utils/index";
+import { validateHomepageInput, validateUpdateHomepageInput } from "./homepage.validator";
 import type { HomepagePayload } from "@app/types/modules/homepageType";
-import { errorHandler, createAppError, responseHandler, ObjectIdValidator, cleanupUploadedImage } from "@modules/utils/index";
+import { fileUploader, getValidationErrorMessage } from "@modules/utils/index";
 import { createHomepage, findHomepage, findHomepageById, updateHomepageById } from "../../services/homepage.service";
+import { errorHandler, createAppError, responseHandler, ObjectIdValidator, cleanupUploadedImage } from "@modules/utils/index";
 
 const HOMEPAGE_CACHE_KEY = "api:homepage";
 
@@ -18,10 +19,23 @@ export const createNewHomepage = asyncErrorHandler(async (req: Request, res: Res
     return errorHandler("All fields are required", 400);
   }
 
+  const validatedResult = await validateHomepageInput.safeParseAsync({
+    title,
+    sub_title,
+    description,
+  });
+
+  if (!validatedResult.success) {
+    const error = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(error, 400);
+  }
+
+  const data = validatedResult.data;
+
   const uploadResult = (await fileUploader(bg_image_url.buffer)) as FileUploadType;
 
   const payload: HomepagePayload = {
-    ...req.body,
+    ...data,
     bg_image_url: uploadResult.secure_url,
     public_id: uploadResult.public_id,
   };
@@ -69,6 +83,19 @@ export const updateHomepage = asyncErrorHandler(async (req: Request, res: Respon
     return errorHandler("Homepage not found", 404);
   }
 
+  const validatedResult = await validateUpdateHomepageInput.safeParseAsync({
+    title,
+    sub_title,
+    description,
+  });
+
+  if (!validatedResult.success) {
+    const error = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(error, 400);
+  }
+
+  const data = validatedResult.data;
+
   const updateData: Partial<HomepagePayload> = {};
 
   if (bg_image_url !== undefined) {
@@ -78,9 +105,9 @@ export const updateHomepage = asyncErrorHandler(async (req: Request, res: Respon
     updateData.bg_image_url = uploadResult.secure_url;
     updateData.public_id = uploadResult.public_id;
   }
-  if (title !== undefined) updateData.title = title;
-  if (sub_title !== undefined) updateData.sub_title = sub_title;
-  if (description !== undefined) updateData.description = description;
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.sub_title !== undefined) updateData.sub_title = data.sub_title;
+  if (data.description !== undefined) updateData.description = data.description;
 
   if (Object.keys(updateData).length === 0) {
     return errorHandler("No homepage data provided", 400);

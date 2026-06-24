@@ -11,6 +11,10 @@ export const authLogin = z.object({
   password: z.string().trim().min(8),
 });
 
+export const authChangeName = z.object({
+  newName: z.string().trim().min(6).max(56),
+});
+
 export const authChangePassword = z.object({
   newPassword: z.string().trim().min(8).regex(/[!@]/, "Password must include ! or @"),
 });
