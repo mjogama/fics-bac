@@ -6,15 +6,15 @@ import type { FileUploadType } from "@app/types/IUploadFile";
 import type { OurTeamPayload } from "@app/types/modules/ourTeamType";
 import { validateOurTeamInput, validateUpdateOurTeamInput } from "./ourTeam.validator";
 import { createOfficer, findOfficerById, findOfficers, updateOfficerById } from "../../services/ourTeam.services";
-import { errorHandler, responseHandler, ObjectIdValidator, fileUploader, deleteUploadedFile, cleanupUploadedImage, getValidationErrorMessage } from "@modules/utils/index";
+import { errorHandler, responseHandler, ObjectIdValidator, fileUploader, cleanupUploadedImage, getValidationErrorMessage } from "@modules/utils/index";
 
 const OFFICERS_CACHE_KEY = "api:our-team:officers";
 
 export const createNewOfficer = asyncErrorHandler(async (req: Request, res: Response) => {
-  const { fullName, position, term } = req.body;
+  const { fullName, position, term, branch } = req.body;
   const profile_image_url = req.file;
 
-  if (!profile_image_url || !fullName || !position || !term) {
+  if (!profile_image_url || !fullName || !position || !term || !branch) {
     return errorHandler("All fields are required", 400);
   }
 
@@ -22,6 +22,7 @@ export const createNewOfficer = asyncErrorHandler(async (req: Request, res: Resp
     fullName,
     position,
     term,
+    branch,
   });
 
   if (!validatedResult.success) {
@@ -69,7 +70,7 @@ export const retrieveOfficers = asyncErrorHandler(async (req: Request, res: Resp
 
 export const updateOfficer = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { fullName, position, term } = req.body;
+  const { fullName, position, term, branch } = req.body;
   const profile_image_url = req.file;
   let uploadedPublicId: string | undefined;
 
@@ -83,6 +84,7 @@ export const updateOfficer = asyncErrorHandler(async (req: Request, res: Respons
     fullName,
     position,
     term,
+    branch,
   });
 
   if (!validatedResult.success) {
@@ -106,9 +108,11 @@ export const updateOfficer = asyncErrorHandler(async (req: Request, res: Respons
     updateData.profile_image_url = uploadResult.secure_url;
     updateData.public_id = uploadResult.public_id;
   }
+
   if (data.fullName !== undefined) updateData.fullName = data.fullName;
   if (data.position !== undefined) updateData.position = data.position;
   if (data.term !== undefined) updateData.term = data.term;
+  if (data.branch !== undefined) updateData.branch = data.branch;
 
   if (Object.keys(updateData).length === 0) {
     return errorHandler("No data field provided", 400);
