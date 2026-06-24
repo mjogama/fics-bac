@@ -13,6 +13,9 @@ export const STATUS_CODE: IStatusCode = {
   404: {
     title: "Not found",
   },
+  409: {
+    title: "Conflict",
+  },
   500: {
     title: "Server error",
   },
