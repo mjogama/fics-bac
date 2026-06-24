@@ -4,10 +4,10 @@ import asyncErrorHandler from "express-async-handler";
 
 import { client } from "@app/config/cache";
 import type { AuthPayload } from "@app/types/IAuthPayload";
-import type { LoginDTO, SignupDTO } from "@app/types/modules/authType";
 import { LoginResponseDTO, SignupResponseDTO } from "./auth.dto";
 import { retrieveUserById } from "@modules/userManagement/v1/index";
-import { authSignup, authLogin, authChangePassword } from "./auth.validator";
+import type { LoginDTO, SignupDTO } from "@app/types/modules/authType";
+import { authSignup, authLogin, authChangeName, authChangePassword } from "./auth.validator";
 import { signupUser, loginUser, updateUserNameById, updateUserPasswordById } from "@modules/auth/services/auth.service";
 import { errorHandler, responseHandler, accessToken, refreshToken, setAuthCookie, clearAuthCookie, getValidationErrorMessage } from "@modules/utils/index";
 
@@ -38,13 +38,13 @@ export const login = asyncErrorHandler(async (req: Request, res: Response) => {
     return errorHandler("All fields are required", 400);
   }
 
-  const result = await authLogin.safeParseAsync({ email, password });
-  if (!result.success) {
-    const errMessage = getValidationErrorMessage(result.error);
+  const validatedResult = await authLogin.safeParseAsync({ email, password });
+  if (!validatedResult.success) {
+    const errMessage = getValidationErrorMessage(validatedResult.error);
     return errorHandler(errMessage, 400);
   }
 
-  const payload: LoginDTO = result.data;
+  const payload: LoginDTO = validatedResult.data;
 
   const dbResult = await loginUser(payload);
 
@@ -117,7 +117,16 @@ export const changeName = asyncErrorHandler(async (req: Request, res: Response) 
     return errorHandler("Name field is required", 400);
   }
 
-  const dbResult = await updateUserNameById(id, newName);
+  const validatedResult = await authChangeName.safeParseAsync({ newName });
+
+  if (!validatedResult.success) {
+    const errMessage = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(errMessage, 400);
+  }
+
+  const data = validatedResult.data;
+
+  const dbResult = await updateUserNameById(id, data?.newName);
 
   responseHandler(res, 200, "Changed name successfully", dbResult);
 });
@@ -130,14 +139,14 @@ export const changePassword = asyncErrorHandler(async (req: Request, res: Respon
     return errorHandler("Password field is required", 400);
   }
 
-  const result = await authChangePassword.safeParseAsync({ newPassword });
+  const validatedResult = await authChangePassword.safeParseAsync({ newPassword });
 
-  if (!result.success) {
-    const errMessage = getValidationErrorMessage(result.error);
+  if (!validatedResult.success) {
+    const errMessage = getValidationErrorMessage(validatedResult.error);
     return errorHandler(errMessage, 400);
   }
 
-  const data = result.data;
+  const data = validatedResult.data;
 
   await updateUserPasswordById(id, data?.newPassword);
 

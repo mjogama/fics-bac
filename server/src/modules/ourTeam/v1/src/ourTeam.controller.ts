@@ -4,8 +4,9 @@ import type { Request, Response } from "express";
 import { client } from "@app/config/cache";
 import type { FileUploadType } from "@app/types/IUploadFile";
 import type { OurTeamPayload } from "@app/types/modules/ourTeamType";
+import { validateOurTeamInput, validateUpdateOurTeamInput } from "./ourTeam.validator";
 import { createOfficer, findOfficerById, findOfficers, updateOfficerById } from "../../services/ourTeam.services";
-import { errorHandler, responseHandler, ObjectIdValidator, fileUploader, deleteUploadedFile, cleanupUploadedImage } from "@modules/utils/index";
+import { errorHandler, responseHandler, ObjectIdValidator, fileUploader, deleteUploadedFile, cleanupUploadedImage, getValidationErrorMessage } from "@modules/utils/index";
 
 const OFFICERS_CACHE_KEY = "api:our-team:officers";
 
@@ -17,10 +18,23 @@ export const createNewOfficer = asyncErrorHandler(async (req: Request, res: Resp
     return errorHandler("All fields are required", 400);
   }
 
+  const validatedResult = await validateOurTeamInput.safeParseAsync({
+    fullName,
+    position,
+    term,
+  });
+
+  if (!validatedResult.success) {
+    const error = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(error, 400);
+  }
+
+  const data = validatedResult.data;
+
   const uploadResult = (await fileUploader(profile_image_url.buffer)) as FileUploadType;
 
   const payload: OurTeamPayload = {
-    ...req.body,
+    ...data,
     profile_image_url: uploadResult.secure_url,
     public_id: uploadResult.public_id,
   };
@@ -65,6 +79,17 @@ export const updateOfficer = asyncErrorHandler(async (req: Request, res: Respons
 
   ObjectIdValidator(id);
 
+  const validatedResult = await validateUpdateOurTeamInput.safeParseAsync({
+    fullName,
+    position,
+    term,
+  });
+
+  if (!validatedResult.success) {
+    const error = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(error, 400);
+  }
+
   const existingOfficer = await findOfficerById(id);
 
   if (!existingOfficer) {
@@ -72,6 +97,7 @@ export const updateOfficer = asyncErrorHandler(async (req: Request, res: Respons
   }
 
   const updateData: Partial<OurTeamPayload> = {};
+  const data = validatedResult.data;
 
   if (profile_image_url !== undefined) {
     const uploadResult = (await fileUploader(profile_image_url.buffer)) as FileUploadType;
@@ -80,9 +106,9 @@ export const updateOfficer = asyncErrorHandler(async (req: Request, res: Respons
     updateData.profile_image_url = uploadResult.secure_url;
     updateData.public_id = uploadResult.public_id;
   }
-  if (fullName !== undefined) updateData.fullName = fullName;
-  if (position !== undefined) updateData.position = position;
-  if (term !== undefined) updateData.term = term;
+  if (data.fullName !== undefined) updateData.fullName = data.fullName;
+  if (data.position !== undefined) updateData.position = data.position;
+  if (data.term !== undefined) updateData.term = data.term;
 
   if (Object.keys(updateData).length === 0) {
     return errorHandler("No data field provided", 400);

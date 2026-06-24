@@ -3,8 +3,9 @@ import asyncErrorHandler from "express-async-handler";
 
 import type { FileUploadType } from "@app/types/IUploadFile";
 import type { EventPayload } from "@app/types/modules/eventsType";
+import { validateEventsInput, validateUpdateEventsInput } from "./events.validator";
 import { createEvent, findEvents, findEventById, updateEventById, deleteEventById } from "../../services/events.service";
-import { errorHandler, createAppError, responseHandler, fileUploader, cleanupUploadedImage, ObjectIdValidator, deleteUploadedFile } from "@modules/utils/index";
+import { errorHandler, createAppError, responseHandler, fileUploader, cleanupUploadedImage, ObjectIdValidator, deleteUploadedFile, getValidationErrorMessage } from "@modules/utils/index";
 
 export const createNewEvent = asyncErrorHandler(async (req: Request, res: Response) => {
   const { start_date, end_date, title, status, location, time, description } = req.body;
@@ -13,6 +14,23 @@ export const createNewEvent = asyncErrorHandler(async (req: Request, res: Respon
   if (image_files.length === 0 || !start_date || !end_date || !title || !status || !location || !time || !description) {
     return errorHandler("All fields are required", 400);
   }
+
+  const validatedResult = await validateEventsInput.safeParseAsync({
+    start_date,
+    end_date,
+    title,
+    status,
+    location,
+    time,
+    description,
+  });
+
+  if (!validatedResult.success) {
+    const error = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(error, 400);
+  }
+
+  const data = validatedResult.data;
 
   const uploadResults: FileUploadType[] = [];
 
@@ -23,7 +41,7 @@ export const createNewEvent = asyncErrorHandler(async (req: Request, res: Respon
     }
 
     const payload: EventPayload = {
-      ...req.body,
+      ...data,
       image_urls: uploadResults.map((result) => result.secure_url),
       public_ids: uploadResults.map((result) => result.public_id),
     };
@@ -52,6 +70,21 @@ export const updateEvent = asyncErrorHandler(async (req: Request, res: Response)
 
   ObjectIdValidator(id);
 
+  const validatedResult = await validateUpdateEventsInput.safeParseAsync({
+    start_date,
+    end_date,
+    title,
+    status,
+    location,
+    time,
+    description,
+  });
+
+  if (!validatedResult.success) {
+    const error = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(error, 400);
+  }
+
   const existingEvent = await findEventById(id);
 
   if (!existingEvent) {
@@ -59,14 +92,15 @@ export const updateEvent = asyncErrorHandler(async (req: Request, res: Response)
   }
 
   const updateData: Partial<EventPayload> = {};
+  const data = validatedResult.data;
 
-  if (start_date !== undefined) updateData.start_date = start_date;
-  if (end_date !== undefined) updateData.end_date = end_date;
-  if (title !== undefined) updateData.title = title;
-  if (status !== undefined) updateData.status = status;
-  if (location !== undefined) updateData.location = location;
-  if (time !== undefined) updateData.time = time;
-  if (description !== undefined) updateData.description = description;
+  if (data.start_date !== undefined) updateData.start_date = data.start_date;
+  if (data.end_date !== undefined) updateData.end_date = data.end_date;
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.location !== undefined) updateData.location = data.location;
+  if (data.time !== undefined) updateData.time = data.time;
+  if (data.description !== undefined) updateData.description = data.description;
 
   if (Object.keys(updateData).length === 0) {
     return errorHandler("No data field provided", 400);

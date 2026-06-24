@@ -3,7 +3,8 @@ import type { Request, Response } from "express";
 
 import type { FileUploadType } from "@app/types/IUploadFile";
 import type { MembershipType } from "@app/types/modules/membershipType";
-import { errorHandler, responseHandler, ObjectIdValidator, fileUploader, cleanupUploadedImage, deleteUploadedFile } from "@modules/utils/index";
+import { validateMembershipInput, validateUpdateMembershipInput } from "./membership.validator";
+import { errorHandler, responseHandler, ObjectIdValidator, fileUploader, cleanupUploadedImage, deleteUploadedFile, getValidationErrorMessage } from "@modules/utils/index";
 import {
   createMembershipTransaction,
   findMembershipTransactions,
@@ -20,6 +21,20 @@ export const createNewTransaction = asyncErrorHandler(async (req: Request, res: 
     return errorHandler("All fields are required", 400);
   }
 
+  const validatedResult = await validateMembershipInput.safeParseAsync({
+    name,
+    purpose,
+    amount,
+    description,
+  });
+
+  if (!validatedResult.success) {
+    const error = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(error, 400);
+  }
+
+  const data = validatedResult.data;
+
   let dbResult;
   const uploadResults: FileUploadType[] = [];
 
@@ -30,7 +45,7 @@ export const createNewTransaction = asyncErrorHandler(async (req: Request, res: 
     }
 
     const payload: MembershipType = {
-      ...req.body,
+      ...data,
       image_urls: uploadResults.map((result) => result.secure_url),
       public_ids: uploadResults.map((result) => result.public_id),
     };
@@ -60,6 +75,18 @@ export const updateTransaction = asyncErrorHandler(async (req: Request, res: Res
 
   ObjectIdValidator(id);
 
+  const validatedResult = await validateUpdateMembershipInput.safeParseAsync({
+    name,
+    purpose,
+    amount,
+    description,
+  });
+
+  if (!validatedResult.success) {
+    const error = getValidationErrorMessage(validatedResult.error);
+    return errorHandler(error, 400);
+  }
+
   const existingTransaction = await findMembershipTransactionById(id);
 
   if (!existingTransaction) {
@@ -67,11 +94,12 @@ export const updateTransaction = asyncErrorHandler(async (req: Request, res: Res
   }
 
   const updateData: Partial<MembershipType> = {};
+  const data = validatedResult.data;
 
-  if (name !== undefined) updateData.name = name;
-  if (purpose !== undefined) updateData.purpose = purpose;
-  if (amount !== undefined && amount !== "") updateData.amount = amount;
-  if (description !== undefined) updateData.description = description;
+  if (data.name !== undefined) updateData.name = data.name;
+  if (data.purpose !== undefined) updateData.purpose = data.purpose;
+  if (data.amount !== undefined) updateData.amount = data.amount;
+  if (data.description !== undefined) updateData.description = data.description;
 
   if (Object.keys(updateData).length === 0) {
     return errorHandler("No data field provided", 400);
