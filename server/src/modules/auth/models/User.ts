@@ -10,6 +10,8 @@ const userSchema = new Schema(
     email: {
       type: String,
       trim: true,
+      unique: true,
+      lowercase: true,
       required: true,
     },
     password: {
@@ -28,7 +30,5 @@ const userSchema = new Schema(
     versionKey: false,
   },
 );
-
-userSchema.index({ email: 1, createdAt: -1 });
 
 export default mongoose.model("User", userSchema, "users");
