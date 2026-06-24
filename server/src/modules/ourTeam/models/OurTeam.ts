@@ -26,6 +26,11 @@ const ourTeamSchema = new Schema(
       trim: true,
       required: true,
     },
+    branch: {
+      type: String,
+      enum: ["Executive Council", "Executive Coordinators", "Advisory Council", "Faculty"],
+      required: true,
+    },
   },
   {
     timestamps: true,

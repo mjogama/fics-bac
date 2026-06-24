@@ -4,4 +4,5 @@ export type OurTeamPayload = {
   fullName: string;
   position: string;
   term: string;
+  branch: string;
 };
