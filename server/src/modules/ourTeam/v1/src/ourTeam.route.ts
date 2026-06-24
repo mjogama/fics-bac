@@ -8,7 +8,7 @@ import { createNewOfficer, retrieveOfficers, updateOfficer } from "./ourTeam.con
 const router = Router();
 
 router.post("/create", authToken, authRole("Admin", "Editor"), uploadFileMiddleware.single("profile_image_url"), createNewOfficer);
-router.get("/officers", authToken, authRole("Admin", "Editor", "Viewer"), retrieveOfficers);
+router.get("/data", authToken, authRole("Admin", "Editor", "Viewer"), retrieveOfficers);
 router.patch("/update/:id", authToken, authRole("Admin", "Editor"), uploadFileMiddleware.single("profile_image_url"), updateOfficer);
 
 export default router;
