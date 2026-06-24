@@ -9,6 +9,7 @@ import cors from "cors";
 import { limiter } from "./middlewares/rateLimit";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
 import { registerRoutes } from "./routes";
+import errorPathHandler from "./middlewares/errorPathHandler";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use(limiter);
 
 registerRoutes(app);
 
+app.use(errorPathHandler);
 app.use(globalErrorHandler);
 
 export default app;
