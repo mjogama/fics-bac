@@ -1,6 +1,6 @@
 import z from "zod";
 
-const eventDate = z.string().regex(/^\d{2}\/\d{2}\/\d{2}$/, "Date must be in YY/MM/DD format");
+const eventDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YY-MM-DD format");
 
 export const validateEventsInput = z.object({
   start_date: eventDate,
