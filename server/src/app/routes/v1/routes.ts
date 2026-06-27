@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from "express";
 
 import { responseHandler } from "@modules/utils";
 import { authV1Routes } from "@modules/auth/v1/index";
+import { aboutV1Routes } from "@modules/about/v1/index";
 import { eventsV1Routes } from "@modules/events/v1/index";
 import { ourTeamV1Routes } from "@modules/ourTeam/v1/index";
 import { homepageV1Routes } from "@modules/homepage/v1/index";
@@ -23,5 +24,6 @@ v1Router.use("/events", eventsV1Routes);
 v1Router.use("/membership", membershipV1Routes);
 v1Router.use("/concern", concernV1Routes);
 v1Router.use("/contact", contactV1Routes);
+v1Router.use("/about", aboutV1Routes);
 
 export default v1Router;
