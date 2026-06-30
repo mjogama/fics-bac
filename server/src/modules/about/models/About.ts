@@ -17,6 +17,16 @@ const aboutSchema = new Schema(
       trim: true,
       required: true,
     },
+    active_members: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    yearly_event: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
   },
   {
     timestamps: true,

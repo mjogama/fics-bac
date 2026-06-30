@@ -7,9 +7,9 @@ import { createAbout, findAbout, findAboutById, updateAboutById } from "../../se
 import { errorHandler, getValidationErrorMessage, ObjectIdValidator, responseHandler } from "@modules/utils";
 
 export const createNewAbout = asyncErrorHandler(async (req: Request, res: Response) => {
-  const { org_about, mission, vision } = req.body;
+  const { org_about, mission, vision, active_members, yearly_event } = req.body;
 
-  if (!org_about || !mission || !vision) {
+  if (!org_about || !mission || !vision || !active_members || !yearly_event) {
     return errorHandler("All fields are required", 400);
   }
 
@@ -17,6 +17,8 @@ export const createNewAbout = asyncErrorHandler(async (req: Request, res: Respon
     org_about,
     mission,
     vision,
+    active_members,
+    yearly_event,
   });
 
   if (!validateResult.success) {
@@ -39,7 +41,7 @@ export const retrieveAbout = asyncErrorHandler(async (req: Request, res: Respons
 
 export const updateAbout = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { org_about, mission, vision } = req.body;
+  const { org_about, mission, vision, active_members, yearly_event } = req.body;
 
   if (!id || Array.isArray(id)) {
     return errorHandler("ID not found or invalid", 400);
@@ -51,6 +53,8 @@ export const updateAbout = asyncErrorHandler(async (req: Request, res: Response)
     org_about,
     mission,
     vision,
+    active_members,
+    yearly_event,
   });
 
   if (!validateResult.success) {
@@ -70,6 +74,8 @@ export const updateAbout = asyncErrorHandler(async (req: Request, res: Response)
   if (data.org_about !== undefined) updateData.org_about = data.org_about;
   if (data.mission !== undefined) updateData.mission = data.mission;
   if (data.vision !== undefined) updateData.vision = data.vision;
+  if (data.active_members !== undefined) updateData.active_members = data.active_members;
+  if (data.yearly_event !== undefined) updateData.yearly_event = data.yearly_event;
 
   if (Object.keys(updateAbout).length !== 0) {
     return errorHandler("No about data fields provided", 400);
