@@ -1,1 +1,85 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-cms-bg: #f4f1ec;
+  --color-cms-surface: #ffffff;
+  --color-cms-inputbg: #faf8f3;
+  --color-cms-tablehead: #f0ece3;
+  --color-cms-ink: #211f1c;
+  --color-cms-body: #2b2825;
+  --color-cms-secondary: #57534e;
+  --color-cms-muted: #807a70;
+  --color-cms-muted2: #8c867b;
+  --color-cms-labelfaint: #6f6a62;
+  --color-cms-placeholder: #b3ada1;
+  --color-cms-cardborder: #e7e2d8;
+  --color-cms-inputborder: #e0dacd;
+  --color-cms-divider: #f0ece3;
+  --color-cms-rowhover: #faf8f3;
+  --color-cms-accent: #c0492f;
+  --color-cms-deleteborder: #ecd9d2;
+  --color-cms-incometext: #216e4e;
+  --color-cms-incomebg: #e3f0e8;
+  --color-cms-incomeborder: #cfe5d8;
+  --color-cms-selection: #d9d3c8;
+  --color-cms-pillbg: #efece4;
+  --color-cms-pillbg2: #d9d3c8;
+
+  --radius-cmscard: 16px;
+  --radius-cmsinput: 10px;
+  --radius-cmsbtn: 8px;
+  --radius-cmspill: 999px;
+
+  --max-width-home: 1180px;
+  --shadow-hero: 0 24px 50px rgba(0, 0, 0, 0.12);
+  --text-h1: 70px;
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -2px;
+  --text-h2: 44px;
+  --text-h2--line-height: 1.1;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cms-bg text-cms-body antialiased;
+    font-family: var(--font-body);
+    margin: 0;
+  }
+
+  ::selection {
+    @apply bg-cms-selection text-cms-body;
+  }
+
+  input,
+  textarea,
+  select {
+    font-family: var(--font-body);
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
